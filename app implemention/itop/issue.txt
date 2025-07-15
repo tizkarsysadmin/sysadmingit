@@ -1,0 +1,50 @@
+
+
+docker cp /home/user01/iTop-icon.png itop:/var/www/html/images/
+Successfully copied 95.2kB to itop:/var/www/html/images/
+root@itc-srvint:~#
+root@itc-srvint:~#  docker cp /home/user01/itop-logo-external.png itop:/var/www/html/images/
+Successfully copied 95.2kB to itop:/var/www/html/images/
+root@itc-srvint:~#
+root@itc-srvint:~# docker cp /home/user01/itop-logo.png itop:/var/www/html/images/
+Successfully copied 95.2kB to itop:/var/www/html/images/
+root@itc-srvint:~#
+root@itc-srvint:~# docker cp /home/user01/iTop-icon.ico itop:/var/www/html/images/
+Successfully copied 6.14kB to itop:/var/www/html/images/
+root@itc-srvint:~#
+root@itc-srvint:~#  docker cp /home/user01/favicon.ico itop:/var/www/html/images/
+Successfully copied 6.14kB to itop:/var/www/html/images/
+root@itc-srvint:~#
+root@itc-srvint:~#
+
+
+
+
+
+
+
+
+docker cp itop-dump.sql itop-db:/itop-dump.sql
+docker exec -it itop-db bash
+mysql -u itopuser -p itop < /dump.sql
+# پسورد را وارد کن (itoppass)
+mysql -u root -p itop < /dump.sql
+
+
+docker cp itop-dump.sql itop-db:/itop-dump.sql
+docker exec -it itop-db bash
+
+ mysql -u root -p itop < /itop-dump.sql
+zizi
+
+
+in 2.7 2.6 volume db and ap plus directory extension:
+
+
+
+2.7 after 2.6 volume db and ap plus:
+docker cp config-itop.php itop:/var/www/html/
+docker exec -it itop bash
+chmod 644 /var/www/html/config-itop.php
+chown www-data:www-data /var/www/html/config-itop.php
+
