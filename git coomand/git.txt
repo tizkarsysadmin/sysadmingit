@@ -39,7 +39,9 @@ git commit -m "your message here"
 git push
 
 
+restore from last delete:
 
+git reset --hard HEAD~1
 
 
 
