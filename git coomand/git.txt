@@ -1,0 +1,46 @@
+
+
+git init
+
+
+
+git remote add origin https://github.com/tizkarsysadmin/sysadmingit.git
+
+or 
+
+git remote set-url origin https://github.com/tizkarsysadmin/sysadmingit.git
+
+
+
+
+git remote -v
+
+
+
+git add "app implementation"
+git add itop
+git add racktables
+git add images
+git add README.md
+
+
+git add .
+
+
+git commit -m "initial commit"
+
+
+
+git branch -M main
+git push -u origin main
+
+git add .
+git commit -m "your message here"
+git push
+
+
+
+
+
+
+
