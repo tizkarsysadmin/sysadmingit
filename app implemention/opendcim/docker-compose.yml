@@ -1,0 +1,27 @@
+services:
+  opendcim:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dcim
+
+    volumes:
+      - opendcim_data:/opt/openDCIM/assets
+      - opendcim_pictures:/opt/openDCIM/assets/pictures
+      - opendcim_drawings:/opt/openDCIM/assets/drawings
+      - ./pass/.htpasswd:/opt/openDCIM/.htpasswd
+    restart: always
+    networks:
+       app-net:
+          ipv4_address: 10.10.10.20
+
+volumes:
+    opendcim_data:
+       driver: local
+    opendcim_pictures:
+       driver: local
+    opendcim_drawings:
+       driver: local
+networks:
+  app-net:
+    external: true

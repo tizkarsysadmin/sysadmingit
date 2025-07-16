@@ -1,0 +1,23 @@
+
+services:
+  racktb:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: racktb
+    restart: always
+    env_file:
+        - .env
+
+    volumes:
+       - racktb_data:/var/www/html/
+    networks:
+       app-net:
+          ipv4_address: 10.10.10.10
+
+volumes:
+    racktb_data:
+       driver: local
+networks:
+    app-net:
+       external: true

@@ -1,0 +1,82 @@
+ano 7.2                                                                                                                                                                                    Dockerfile
+FROM ubuntu:24.04
+LABEL author="zien tizkar  zein_tiz@yahoo.com"
+
+
+# Preconfigure timezone and other interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+
+
+# Update package list and install necessary packages
+RUN apt-get update && apt-get install -y \
+    mariadb-server \
+    libapache2-mod-php \
+    php \
+    php-mysql \
+    php-cli \
+    php-json \
+    graphviz \
+    php-xml \
+    php-gd \
+    php-zip \
+    php-curl \
+    php-soap \
+    php-mbstring \
+    php-apcu \
+    php-ldap \
+    php-imap \
+    wget \
+    unzip \
+    acl\
+    nano\
+    sudo
+
+# Download and install iTop
+RUN wget https://sourceforge.net/projects/itop/files/latest/download -O /tmp/itop.zip \
+    && unzip /tmp/itop.zip "web/*" -d /var/www/html/itop \
+    && mv /var/www/html/itop/web/* /var/www/html/itop \
+    && rmdir /var/www/html/itop/web \
+    && mkdir -p /var/www/html/itop/data /var/www/html/itop/log \
+    && setfacl -dR -m u:www-data:rwX /var/www/html/itop/data /var/www/html/itop/log \
+    && setfacl -R -m u:www-data:rwX /var/www/html/itop/data /var/www/html/itop/log \
+    && setfacl -m u:www-data:rwX /var/www/html/itop/ \
+    && mkdir -p /var/www/html/itop/env-production /var/www/html/itop/env-production-build /var/www/html/itop/env-test /var/www/html/itop/env-test-build \
+    && chown www-data: /var/www/html/itop/conf /var/www/html/itop/env-production /var/www/html/itop/env-production-build /var/www/html/itop/env-test /var/www/html/itop/env-test-build
+
+# Configure MariaDB
+#RUN service mariadb start && mysql_secure_installation
+
+
+
+
+RUN echo '<VirtualHost *:80>\n\
+    ServerAdmin webmaster@localhost\n\
+    DocumentRoot /var/www/html/itop\n\
+\n\
+    <Directory /var/www/html/itop>\n\
+        Options Indexes FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-enabled/000-default.conf
+
+# Enable mod_rewrite for AllowOverride All to work
+RUN a2enmod rewrite
+
+
+# Expose ports
+EXPOSE 80
+#3306
+
+
+#COPY setup-itop.sh /usr/local/bin/setup-itop.sh
+#RUN chmod +x /usr/local/bin/setup-itop.sh
+
+
+
+# Start services
+CMD ["/bin/bash", "-c", "service apache2 start && tail -f /dev/null"]

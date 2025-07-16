@@ -1,0 +1,22 @@
+### itop with docker file build
+
+services:
+  itop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: itop
+
+    volumes:
+       - itop_data:/var/www/itop/
+    networks:
+       app-net:
+          ipv4_address: 10.10.10.30
+
+volumes:
+    itop_data:
+       driver: local
+
+networks:
+  app-net:
+    external: true

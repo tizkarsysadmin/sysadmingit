@@ -1,0 +1,13 @@
+
+services:
+  unifi-controller:
+    image: jacobalberty/unifi:v9.2.87
+    container_name: unifi-controller
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - TZ=Asia/Tehran
+    volumes:
+       # - ./data:/usr/lib/unifi/data
+         - ./data:/unifi/data
+

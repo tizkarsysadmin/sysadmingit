@@ -1,0 +1,6 @@
+docker run -d \
+     -p 80:80 \
+     -v /opt/opendcim:/var/www/html/assets \
+     -e OPENDCIM_DB_HOST=mysql.mycompany.com \
+     opendcim/opendcim:23.04
+	 

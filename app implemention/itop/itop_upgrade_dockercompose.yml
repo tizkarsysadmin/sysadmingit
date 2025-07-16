@@ -1,0 +1,48 @@
+### this yml file used to upgrade itop after version 2.6 
+### for complete instruction use my github
+services:
+  db:
+    image: proxy.mynexusrepo.ir:8082/mariadb:10.6-ubi
+    container_name: itop-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: zizi
+      MYSQL_DATABASE: itop
+      MYSQL_USER: root
+      MYSQL_PASSWORD: zizi
+      MARIADB_AUTO_UPGRADE: 1
+    volumes:
+      - v260_db_data26:/var/lib/mysql
+    networks:
+       app-net:
+          ipv4_address: 10.10.10.39
+
+  itop:
+    image: proxy.mynexusrepo.ir:8082/itop:3.2.0
+    container_name: itop
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_NAME: itop
+      DB_USER: root
+      DB_PASSWORD: zizi
+    restart: always
+    volumes:
+      - v260_itop_data26:/var/www/html/data
+    networks:
+       app-net:
+          ipv4_address: 10.10.10.30
+
+volumes:
+  v260_db_data26:
+    external: true
+  v260_itop_data26:
+    external: true
+
+networks:
+  app-net:
+    external: true
+

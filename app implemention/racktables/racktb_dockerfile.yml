@@ -1,0 +1,96 @@
+
+FROM ubuntu:24.04
+LABEL author="zien tizkar  zein_tiz@yahoo.com"
+
+
+# Preconfigure timezone and other interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime
+
+
+# Update package list and install necessary packages
+RUN apt-get update && apt-get install -y \
+   # mariadb-server \
+   # libapache2-mod-php \
+   # php \
+   # php-mysql \
+   # php-cli \
+   # php-json \
+   # graphviz \
+   # php-xml \
+   # php-gd \
+   # php-zip \
+   # php-curl \
+   # php-soap \
+   # php-mbstring \
+   # php-apcu \
+   # php-ldap \
+   # php-imap \
+   # wget \
+   # unzip \
+   # acl\
+   # sudo
+     php apache2-bin libapache2-mod-php php-gd php-pdo php-mysql php-mbstring php-bcmath php-json php-snmp git php-ldap php-curl php-cli
+
+
+# Download and install racktables
+
+WORKDIR /var/www/html
+RUN git clone https://github.com/RackTables/racktables.git
+RUN chown -R www-data:www-data /var/www/html/racktables
+
+RUN touch '/var/www/html/racktables/wwwroot/inc/secret.php'
+RUN chmod a=rw '/var/www/html/racktables/wwwroot/inc/secret.php'
+
+
+
+
+RUN echo '<VirtualHost *:80>\n\
+    ServerAdmin webmaster@localhost\n\
+    DocumentRoot /var/www/html/racktables/wwwroot\n\
+\n\
+    <Directory /var/www/html/racktables/wwwroot>\n\
+        Options Indexes FollowSymLinks\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+\n\
+    ErrorLog ${APACHE_LOG_DIR}/error.log\n\
+    CustomLog ${APACHE_LOG_DIR}/access.log combined\n\
+</VirtualHost>' > /etc/apache2/sites-enabled/000-default.conf
+
+
+
+RUN echo 'Options -Indexes\n\
+\n\
+<IfModule mod_rewrite.c>\n\
+    RewriteEngine On\n\
+    RewriteBase /racktables/wwwroot/\n\
+\n\
+    RewriteCond %{REQUEST_FILENAME} !-f\n\
+    RewriteRule ^([^\.]+)$ $1.php [NC,L]\n\
+</IfModule>\n\
+\n\
+<Files ~ ".(inc|log|conf)$">\n\
+    Require all denied\n\
+</Files>' > /etc/apache2/.htaccess
+
+
+
+
+# Enable mod_rewrite for AllowOverride All to work
+RUN a2enmod rewrite
+
+
+# Expose ports
+EXPOSE 80
+#3306
+
+
+#COPY setup-itop.sh /usr/local/bin/setup-itop.sh
+#RUN chmod +x /usr/local/bin/setup-itop.sh
+
+
+
+# Start services
+CMD ["/bin/bash", "-c", "service apache2 start && tail -f /dev/null"]
